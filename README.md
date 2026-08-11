@@ -7,8 +7,6 @@ the active character follows the pointer while a timed trail settles behind it. 
 The interaction was inspired by Turbopuffer's public header wordmark and developed as
 an independent interaction study. This project is not affiliated with Turbopuffer.
 
-[![The settled “turbopuffer” word beside an example of its characters scrambling under the pointer.](docs/scramble-text-preview.png)](https://themtset.github.io/da/assets/work/scramble-text.html)
-
 [**Try the interactive demo →**](https://themtset.github.io/da/assets/work/scramble-text.html)
 
 ## Try it
