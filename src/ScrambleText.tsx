@@ -17,6 +17,7 @@ const VISUALLY_HIDDEN: CSSProperties = {
 const SCRAMBLE_CHARS = "0123456789&%$#@";
 const FLICKER_MS = 450; // how long a trailing letter keeps flickering after being passed over
 const STEP_MS = 80; // stagger between letters locking in during the entry ripple
+const EMULATED_MOUSE_GUARD_MS = 1200; // ignore compatibility mouse events emitted after touch
 
 interface ScrambleTextProps {
   text: string;
@@ -30,6 +31,7 @@ export function ScrambleText({ text, className, scrambleOnMount = false }: Scram
   const charEls = useRef<(HTMLSpanElement | null)[]>([]);
   const resolveAt = useRef<number[]>(text.split("").map(() => -Infinity));
   const hoverIndex = useRef(-1); // letter currently under the pointer — flickers continuously, no timeout
+  const ignoreMouseUntil = useRef(-Infinity);
   const rafId = useRef<number | undefined>(undefined);
   const reducedMotion = useRef(false);
 
@@ -126,6 +128,15 @@ export function ScrambleText({ text, className, scrambleOnMount = false }: Scram
     ensureLoop();
   }, [ensureLoop]);
 
+  const markTouchInput = useCallback(() => {
+    ignoreMouseUntil.current = performance.now() + EMULATED_MOUSE_GUARD_MS;
+  }, []);
+
+  const releaseTouch = useCallback(() => {
+    markTouchInput();
+    releaseHover();
+  }, [markTouchInput, releaseHover]);
+
   useEffect(() => {
     reducedMotion.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (scrambleOnMount && !reducedMotion.current) {
@@ -145,13 +156,23 @@ export function ScrambleText({ text, className, scrambleOnMount = false }: Scram
         ref={rootRef}
         aria-hidden="true"
         style={{ display: "inline-flex", whiteSpace: "pre", touchAction: "none", userSelect: "none" }}
-        onMouseEnter={(e) => rippleInto(indexFromX(e.clientX))}
-        onMouseMove={(e) => handleMove(e.clientX)}
+        onMouseEnter={(e) => {
+          if (performance.now() >= ignoreMouseUntil.current) rippleInto(indexFromX(e.clientX));
+        }}
+        onMouseMove={(e) => {
+          if (performance.now() >= ignoreMouseUntil.current) handleMove(e.clientX);
+        }}
         onMouseLeave={releaseHover}
-        onTouchStart={(e) => rippleInto(indexFromX(e.touches[0].clientX))}
-        onTouchMove={(e) => handleMove(e.touches[0].clientX)}
-        onTouchEnd={releaseHover}
-        onTouchCancel={releaseHover}
+        onTouchStart={(e) => {
+          markTouchInput();
+          rippleInto(indexFromX(e.touches[0].clientX));
+        }}
+        onTouchMove={(e) => {
+          markTouchInput();
+          handleMove(e.touches[0].clientX);
+        }}
+        onTouchEnd={releaseTouch}
+        onTouchCancel={releaseTouch}
       >
         {text.split("").map((ch, i) => (
           <span

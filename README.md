@@ -49,10 +49,12 @@ is recommended so random replacement characters retain a stable width.
 ## Behavior
 
 - Entry resolves farthest-first toward the character under the pointer.
-- The character under the pointer keeps scrambling without a timeout.
+- With a mouse, the character under the pointer keeps scrambling until the pointer leaves.
 - Moving releases every crossed character into a 450ms trail, including characters
   skipped by a fast pointer movement.
-- Leaving or ending a touch releases the final character.
+- Touch input stays active only while pressed; lifting or cancelling always releases the
+  final character, and compatibility mouse events are ignored so taps cannot leave a
+  persistent mobile hover.
 - `prefers-reduced-motion: reduce` renders stable text and disables the animation.
 - Animated characters are hidden from assistive technology; screen readers receive the
   real text once through an inline visually-hidden element.
