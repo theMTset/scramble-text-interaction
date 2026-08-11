@@ -16,6 +16,7 @@ const VISUALLY_HIDDEN: CSSProperties = {
 
 const SCRAMBLE_CHARS = "0123456789&%$#@";
 const FLICKER_MS = 450; // how long a trailing letter keeps flickering after being passed over
+const RELEASE_MS = 2000; // how long the final focused letter persists after mouse leave or touch release
 const STEP_MS = 80; // stagger between letters locking in during the entry ripple
 const EMULATED_MOUSE_GUARD_MS = 1200; // ignore compatibility mouse events emitted after touch
 
@@ -123,7 +124,7 @@ export function ScrambleText({ text, className, scrambleOnMount = false }: Scram
 
   const releaseHover = useCallback(() => {
     if (hoverIndex.current === -1) return;
-    resolveAt.current[hoverIndex.current] = performance.now() + FLICKER_MS;
+    resolveAt.current[hoverIndex.current] = performance.now() + RELEASE_MS;
     hoverIndex.current = -1;
     ensureLoop();
   }, [ensureLoop]);
