@@ -7,6 +7,8 @@ the active character follows the pointer while a timed trail settles behind it. 
 The interaction was inspired by Turbopuffer's public header wordmark and developed as
 an independent interaction study. This project is not affiliated with Turbopuffer.
 
+![The pointer moving back and forth across “turbopuffer” while letters scramble and settle behind it.](docs/scramble-text-demo.gif)
+
 ## Try it
 
 ```sh
