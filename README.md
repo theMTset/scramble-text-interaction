@@ -2,7 +2,7 @@
 
 A pointer-following text scramble built as a reusable React + TypeScript component.
 Enter the word anywhere and its letters resolve toward that point. Move across it and
-the active character follows the pointer while a timed trail settles behind it.
+the active character follows the pointer while a timed trail settles behind it. Work for desktop mouse interactions as well as mobile touch.
 
 The interaction was inspired by Turbopuffer's public header wordmark and developed as
 an independent interaction study. This project is not affiliated with Turbopuffer.
@@ -64,8 +64,7 @@ is recommended so random replacement characters retain a stable width.
 
 The studied header triggered a whole-word left-to-right decode from the logo wrapper.
 This component listens on the text itself because pointer position determines the entry
-character and trail. If the icon should also trigger the effect, enlarge the text hit
-area rather than forwarding competing pointer events from two elements.
+character and trail.
 
 ## License
 
